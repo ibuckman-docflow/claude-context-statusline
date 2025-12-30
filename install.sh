@@ -60,7 +60,7 @@ else
 fi
 
 # Check if statusline is already configured
-if grep -q '"statusline"' "$SETTINGS_FILE"; then
+if grep -q '"statusLine"' "$SETTINGS_FILE"; then
     echo "⚠️  Statusline already configured in settings.json"
     echo "   Skipping settings update to preserve your existing configuration."
 else
@@ -74,7 +74,10 @@ with open(settings_file, 'r') as f:
     settings = json.load(f)
 
 statusline_path = os.path.expanduser("~/.claude/statusline.sh")
-settings["statusline"] = statusline_path
+settings["statusLine"] = {
+    "type": "command",
+    "command": statusline_path
+}
 
 with open(settings_file, 'w') as f:
     json.dump(settings, f, indent=2)
@@ -95,4 +98,4 @@ echo "Start a new Claude Code session to see it in action!"
 echo ""
 echo "To uninstall, remove the statusline script and entry from settings.json:"
 echo "  rm $STATUSLINE_PATH"
-echo "  # Then manually remove the 'statusline' entry from $SETTINGS_FILE"
+echo "  # Then manually remove the 'statusLine' entry from $SETTINGS_FILE"
