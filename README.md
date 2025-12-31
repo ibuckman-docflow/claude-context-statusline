@@ -4,22 +4,22 @@ A color-coded statusline for Claude Code that shows your remaining context windo
 
 ## Features
 
-- **Real-time context tracking**: Shows the percentage of your 200K token budget remaining
-- **Color-coded indicators**:
-  - 🟢 Green: >50% context remaining
-  - 🟡 Yellow: 11-50% context remaining
-  - 🔴 Red: ≤10% context remaining
+- **Early warning before auto-compact**: The primary goal is to give you advance notice before Claude Code auto-compacts your conversation, so you can take action (start a new conversation, manually compact, etc.)
+- **Measures "until auto-compact"**: Claude Code auto-compacts at ~10% context remaining. This statusline shows how much context you have left *before that threshold*, giving you actionable information
+- **Color-coded warnings**:
+  - 🟢 Green: >30% until auto-compact (plenty of room)
+  - 🟡 Yellow: 1-30% until auto-compact (getting close, plan accordingly)
+  - 🔴 Red: 0% (auto-compact imminent or in progress)
 - **Accurate from start**: Shows "Context: --% (pending)" until first response, then displays actual usage
 - **Cached for performance**: Uses smart caching to minimize performance impact
-- **No stale data**: Fixed issue where previous conversation's context would show at startup
 
 ## Display Examples
 
 ```
 Context: --% (pending)        # At conversation start (waiting for first response)
-Context: 88% free             # After first response (green)
-Context: 35% free             # Mid-conversation (yellow)
-Context: 8% free              # Nearly full (red)
+Context: 78% until compact    # Plenty of room (green)
+Context: 25% until compact    # Getting close, consider wrapping up (yellow)
+Context: 0% until compact     # Auto-compact is imminent or starting (red)
 ```
 
 ## Installation
@@ -62,8 +62,13 @@ chmod +x ~/.claude/statusline.sh
 The script reads the Claude Code transcript file to extract token usage information:
 - Parses the last line of the transcript for usage data
 - Calculates percentage of 200K token budget remaining
-- Applies color coding based on thresholds
+- Subtracts the ~10% auto-compact threshold to show "until compact"
+- Applies color coding based on how close you are to auto-compact
 - Caches results for quick display
+
+**Why "until compact" instead of "free"?**
+
+Claude Code doesn't wait until 0% to compact—it has a safety buffer and triggers auto-compact at ~10% remaining. Showing raw "free" percentage is misleading because you'll see "12% free" right as compaction starts, which is confusing. By showing "until compact", the number hits 0% exactly when you'd expect: when auto-compact begins.
 
 ## Troubleshooting
 
@@ -80,6 +85,7 @@ The script reads the Claude Code transcript file to extract token usage informat
 ### Percentage seems incorrect
 - The first message will show "--% (pending)" until Claude responds
 - After the first response, it will show accurate usage including system prompts and CLAUDE.md
+- Remember: this shows "until auto-compact" not raw "free" - so 0% means auto-compact is starting, not that you're out of context
 
 ## Uninstall
 

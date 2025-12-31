@@ -31,6 +31,8 @@ except:
 
 # Calculate free percentage (200k budget)
 budget=200000
+# Claude Code auto-compacts at ~10% remaining, so usable context is 90% of budget
+autocompact_threshold=10
 
 # If no valid usage yet, show pending state
 if [ "$usage" = "0" ] || [ -z "$usage" ]; then
@@ -40,17 +42,23 @@ fi
 
 free=$(python3 -c "print(int(round((($budget - $usage) * 100) / $budget)))")
 
-# Color code based on percentage
-# Green: > 50%, Yellow: 11-50%, Red: <= 10%
-if [ "$free" -gt 50 ]; then
+# Calculate "until auto-compact" (how much until we hit the 10% threshold)
+until_compact=$((free - autocompact_threshold))
+if [ "$until_compact" -lt 0 ]; then
+    until_compact=0
+fi
+
+# Color code based on until_compact percentage
+# Green: > 30%, Yellow: 1-30%, Red: 0% (at or past threshold)
+if [ "$until_compact" -gt 30 ]; then
     color="\033[32m"  # Green
-elif [ "$free" -gt 10 ]; then
+elif [ "$until_compact" -gt 0 ]; then
     color="\033[33m"  # Yellow
 else
     color="\033[31m"  # Red
 fi
 reset="\033[0m"
 
-output=$(printf "${color}Context: %d%% free${reset}" "$free")
+output=$(printf "${color}Context: %d%% until compact${reset}" "$until_compact")
 echo "$output" > "$cache_file"
 printf "%s" "$output"
