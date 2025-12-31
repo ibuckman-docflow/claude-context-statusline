@@ -8,8 +8,8 @@ A color-coded statusline for Claude Code that shows your remaining context windo
 - **Measures "until auto-compact"**: Claude Code auto-compacts at ~10% context remaining. This statusline shows how much context you have left *before that threshold*, giving you actionable information
 - **Color-coded warnings**:
   - 🟢 Green: >30% until auto-compact (plenty of room)
-  - 🟡 Yellow: 1-30% until auto-compact (getting close, plan accordingly)
-  - 🔴 Red: 0% (auto-compact imminent or in progress)
+  - 🟡 Yellow: 11-30% until auto-compact (getting close, plan accordingly)
+  - 🔴 Red: 0-10% until auto-compact (auto-compact imminent)
 - **Accurate from start**: Shows "Context: --% (pending)" until first response, then displays actual usage
 - **Cached for performance**: Uses smart caching to minimize performance impact
 

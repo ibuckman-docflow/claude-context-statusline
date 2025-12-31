@@ -49,10 +49,10 @@ if [ "$until_compact" -lt 0 ]; then
 fi
 
 # Color code based on until_compact percentage
-# Green: > 30%, Yellow: 1-30%, Red: 0% (at or past threshold)
+# Green: > 30%, Yellow: 11-30%, Red: 0-10%
 if [ "$until_compact" -gt 30 ]; then
     color="\033[32m"  # Green
-elif [ "$until_compact" -gt 0 ]; then
+elif [ "$until_compact" -gt 10 ]; then
     color="\033[33m"  # Yellow
 else
     color="\033[31m"  # Red
